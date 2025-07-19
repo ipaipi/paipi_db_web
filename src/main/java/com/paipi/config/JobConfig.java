@@ -1,6 +1,7 @@
 package com.paipi.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class JobConfig {
         private DataSourceConfig common;
         private DataSourceConfig reader;
         private DataSourceConfig writer;
+        @JsonProperty("transformer")
         private List<TransformerConfig> transformer;
 
         // getter/setter

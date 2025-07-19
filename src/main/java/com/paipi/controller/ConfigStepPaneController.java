@@ -188,6 +188,13 @@ public class ConfigStepPaneController {
                 JobConfig.ContentConfig dbContent = new JobConfig.ContentConfig();
                 dbContent.setReader(sourceConfig);
                 dbContent.setWriter(targetConfig);
+                // 保留原有transformer链
+                if (jobConfig.getContent() != null && !jobConfig.getContent().isEmpty()) {
+                    JobConfig.ContentConfig old = jobConfig.getContent().get(0);
+                    if (old.getTransformer() != null) {
+                        dbContent.setTransformer(old.getTransformer());
+                    }
+                }
                 jobConfig.setContent(Collections.singletonList(dbContent));
                 break;
             case "EXECUTE_SQL":
@@ -1229,6 +1236,9 @@ public class ConfigStepPaneController {
                 sourceTypeComboBox.setValue(sourceConfig.getName());
                 targetTypeComboBox.setValue(targetConfig.getName());
                 refreshParamGrid();
+                // 新增：导入后刷新transformer链和json区
+                refreshTransformerPreview();
+                triggerConfigChanged();
                 showInfo("导入成功");
             }
         } catch (Exception e) {
