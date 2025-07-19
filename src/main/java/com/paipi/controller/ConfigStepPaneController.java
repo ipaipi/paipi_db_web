@@ -405,18 +405,6 @@ public class ConfigStepPaneController {
             });
             row++;
         }
-        // where（仅reader端）
-        if (!isWriter && !isExecuteSqlMode) {
-            grid.add(new Label("过滤条件(where)"), 0, row);
-            TextField whereField = new TextField((String) paramArr[0].getOrDefault("where", ""));
-            whereField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-            grid.add(whereField, 1, row);
-            whereField.textProperty().addListener((obs, oldV, newV) -> {
-                paramArr[0].put("where", newV);
-                triggerConfigChanged();
-            });
-            row++;
-        }
         // querySql（仅reader端）
         if (!isWriter && !isExecuteSqlMode) {
             grid.add(new Label("自定义查询SQL(querySql)"), 0, row);
@@ -631,18 +619,6 @@ public class ConfigStepPaneController {
             grid.add(splitPKField, 1, row);
             splitPKField.textProperty().addListener((obs, oldV, newV) -> {
                 paramArr[0].put("splitPK", newV);
-                triggerConfigChanged();
-            });
-            row++;
-        }
-        // where（仅reader端）
-        if (!isWriter && !isExecuteSqlMode) {
-            grid.add(new Label("过滤条件(where)"), 0, row);
-            TextField whereField = new TextField((String) paramArr[0].getOrDefault("where", ""));
-            whereField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-            grid.add(whereField, 1, row);
-            whereField.textProperty().addListener((obs, oldV, newV) -> {
-                paramArr[0].put("where", newV);
                 triggerConfigChanged();
             });
             row++;
@@ -899,18 +875,6 @@ public class ConfigStepPaneController {
             grid.add(splitPKField, 1, row);
             splitPKField.textProperty().addListener((obs, oldV, newV) -> {
                 paramArr[0].put("splitPK", newV);
-                triggerConfigChanged();
-            });
-            row++;
-        }
-        // where（仅reader端）
-        if (!isWriter && !isExecuteSqlMode) {
-            grid.add(new Label("过滤条件(where)"), 0, row);
-            TextField whereField = new TextField((String) paramArr[0].getOrDefault("where", ""));
-            whereField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-            grid.add(whereField, 1, row);
-            whereField.textProperty().addListener((obs, oldV, newV) -> {
-                paramArr[0].put("where", newV);
                 triggerConfigChanged();
             });
             row++;
