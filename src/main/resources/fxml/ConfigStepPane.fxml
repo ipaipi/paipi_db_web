@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.ConfigStepPaneController" spacing="24"
+      style="-fx-padding: 0 0 0 0;">
+    <VBox spacing="8">
+        <Label text="全局设置 (setting)" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+        <Separator style="-fx-padding: 0 0 8 0;"/>
+        <GridPane fx:id="settingGrid" hgap="12" vgap="10"/>
+    </VBox>
+    <!-- 同步模式 -->
+    <VBox spacing="8">
+        <Label text="1. 选择同步模式" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+        <Separator style="-fx-padding: 0 0 8 0;"/>
+        <ComboBox fx:id="modeComboBox" promptText="请选择同步模式"
+                  style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+    </VBox>
+    <!-- 数据源类型 -->
+    <VBox spacing="8">
+        <Label text="2. 选择数据源类型" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+        <Separator style="-fx-padding: 0 0 8 0;"/>
+        <ComboBox fx:id="sourceTypeComboBox" promptText="请选择源数据源"
+                  style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <ComboBox fx:id="targetTypeComboBox" promptText="请选择目标数据源"
+                  style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+    </VBox>
+    <!-- 参数填写 -->
+    <VBox spacing="8">
+        <Label text="3. 填写参数" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+        <Separator style="-fx-padding: 0 0 8 0;"/>
+        <GridPane fx:id="paramGrid" hgap="12" vgap="10"/>
+    </VBox>
+    <!-- 按钮区块 -->
+    <HBox spacing="12" style="-fx-padding: 8 0 0 0;">
+        <Button text="保存配置" onAction="#onSaveConfig"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <Button text="导入配置" onAction="#onImportConfig"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <Button text="导出配置" onAction="#onExportConfig"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <Button text="加载典型配置" onAction="#onLoadExample"
+                style="-fx-background-radius: 8; -fx-background-color: #e6f7ff; -fx-border-radius: 8; -fx-border-color: #91d5ff; -fx-border-width: 1; -fx-text-fill: #1890ff; -fx-font-weight: bold;"/>
+    </HBox>
+    <!-- Transformer链 -->
+    <VBox spacing="8">
+        <Label text="Transformer链预览" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+        <Separator style="-fx-padding: 0 0 8 0;"/>
+        <TableView fx:id="transformerPreviewTable" prefHeight="120"
+                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;">
+            <columns>
+                <TableColumn fx:id="colTIndex" text="序号" prefWidth="50"/>
+                <TableColumn fx:id="colTType" text="类型" prefWidth="120"/>
+                <TableColumn fx:id="colTParam" text="参数" prefWidth="320"/>
+            </columns>
+        </TableView>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="编辑Transformer链" onAction="#onEditTransformer"
+                    style="-fx-background-radius: 8; -fx-background-color: #409eff; -fx-text-fill: #fff; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+</VBox>

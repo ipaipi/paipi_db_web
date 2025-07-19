@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.TransformerChainDialogController" spacing="16"
+      style="-fx-padding: 28; -fx-background-radius: 14; -fx-background-color: #fff;">
+    <Label text="Transformer链编辑" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-padding: 0 0 12 0;"/>
+    <TableView fx:id="transformerTable" prefHeight="220"
+               style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;">
+        <columns>
+            <TableColumn fx:id="colIndex" text="序号" prefWidth="50"/>
+            <TableColumn fx:id="colType" text="类型" prefWidth="120"/>
+            <TableColumn fx:id="colParam" text="参数" prefWidth="320"/>
+        </columns>
+    </TableView>
+    <HBox spacing="12" style="-fx-padding: 8 0 0 0;">
+        <Button text="添加" onAction="#onAdd"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <Button text="编辑" onAction="#onEdit"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <Button text="删除" onAction="#onDelete"
+                style="-fx-background-radius: 8; -fx-background-color: #fff1f0; -fx-border-radius: 8; -fx-border-color: #ffa39e; -fx-border-width: 1; -fx-text-fill: #cf1322;"/>
+        <Button text="上移" onAction="#onMoveUp"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+        <Button text="下移" onAction="#onMoveDown"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+    </HBox>
+    <HBox spacing="16" alignment="CENTER_RIGHT" style="-fx-padding: 12 0 0 0;">
+        <Button text="确定" onAction="#onOk"
+                style="-fx-background-radius: 8; -fx-background-color: #409eff; -fx-text-fill: #fff; -fx-font-weight: bold; min-width: 72;"/>
+        <Button text="取消" onAction="#onCancel"
+                style="-fx-background-radius: 8; -fx-background-color: #f0f0f0; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-border-width: 1; min-width: 72;"/>
+    </HBox>
+</VBox> 

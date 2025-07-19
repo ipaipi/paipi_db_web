@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.MainWindowController"
+            style="-fx-background-color: #f7f8fa;" prefWidth="1200" prefHeight="800">
+    <SplitPane orientation="HORIZONTAL" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
+               AnchorPane.bottomAnchor="0" dividerPositions="0.32,0.68">
+        <!-- 任务配置区 极简风格 -->
+        <VBox minWidth="340" maxWidth="700" VBox.vgrow="ALWAYS" style="-fx-background-color: #fff; -fx-padding: 0;">
+            <VBox style="-fx-padding: 32 32 0 32;">
+                <Label text="任务配置" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+            </VBox>
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color:transparent;"
+                        VBox.vgrow="ALWAYS">
+                <VBox style="-fx-padding: 0 32 32 32;">
+                    <AnchorPane fx:id="configTabPane" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                                AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+        <!-- JSON展示区 极简风格 -->
+        <VBox minWidth="240" maxWidth="700" VBox.vgrow="ALWAYS" style="-fx-background-color: #fff; -fx-padding: 0;">
+            <VBox style="-fx-padding: 32 32 0 32;">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="JSON配置" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+                    <Button text="⧉" onAction="#onCopyJson"
+                            style="-fx-background-radius: 6; -fx-background-color: transparent; -fx-text-fill: #1890ff; -fx-font-size: 16; -fx-padding: 0 0 0 12;">
+                        <tooltip>
+                            <Tooltip text="复制JSON"/>
+                        </tooltip>
+                    </Button>
+                </HBox>
+            </VBox>
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color:transparent;"
+                        VBox.vgrow="ALWAYS">
+                <TextArea fx:id="jsonArea" editable="false" wrapText="true"
+                          style="-fx-font-family: 'Consolas', 'monospace'; -fx-font-size: 14; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; -fx-padding: 16; -fx-background-color: #f7f8fa;"
+                          VBox.vgrow="ALWAYS" prefHeight="0"/>
+            </ScrollPane>
+        </VBox>
+        <!-- 运行与监控区 极简风格 -->
+        <VBox minWidth="340" maxWidth="700" VBox.vgrow="ALWAYS" style="-fx-background-color: #fff; -fx-padding: 0;">
+            <VBox style="-fx-padding: 32 32 0 32;">
+                <Label text="运行与监控" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+            </VBox>
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color:transparent;"
+                        VBox.vgrow="ALWAYS">
+                <VBox style="-fx-padding: 0 32 32 32;">
+                    <HBox spacing="10" style="-fx-padding: 0 0 16 0;">
+                        <Label text="JAR路径" style="-fx-font-size: 14;"/>
+                        <TextField fx:id="jarPathField" prefWidth="220"
+                                   style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; -fx-font-size: 14;"/>
+                        <Button text="📁" onAction="#onChooseJar"
+                                style="-fx-background-radius: 6; -fx-background-color: transparent; -fx-text-fill: #1890ff; -fx-font-size: 16;">
+                            <tooltip>
+                                <Tooltip text="选择JAR文件"/>
+                            </tooltip>
+                        </Button>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 0 0 16 0;">
+                        <Button text="▶ 运行" onAction="#onRunTask"
+                                style="-fx-background-radius: 6; -fx-background-color: #1890ff; -fx-text-fill: #fff; -fx-font-weight: bold; -fx-font-size: 14;"/>
+                        <Button text="■ 停止" onAction="#onStopTask"
+                                style="-fx-background-radius: 6; -fx-background-color: #f0f0f0; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; -fx-font-size: 14;"/>
+                        <Button text="⬇ 下载" onAction="#onDownloadResult"
+                                style="-fx-background-radius: 6; -fx-background-color: #f0f0f0; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; -fx-font-size: 14;"/>
+                    </HBox>
+                    <ProgressBar fx:id="runProgressBar" progress="0.0" prefWidth="320"
+                                 style="-fx-accent: #1890ff; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; height: 14;"/>
+                    <Label text="日志输出" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-padding: 18 0 0 0;"/>
+                    <TextArea fx:id="runLogTextArea" editable="false" prefRowCount="8" wrapText="true"
+                              style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; -fx-font-size: 14; -fx-background-color: #f7f8fa;"
+                              VBox.vgrow="ALWAYS"/>
+                    <Separator style="-fx-padding: 18 0 18 0; -fx-background-color: #eaeaea;"/>
+                    <Label text="历史记录" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+                    <ListView fx:id="runHistoryListView" prefHeight="100"
+                              style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #eaeaea; -fx-border-width: 1; -fx-font-size: 14;"/>
+                    <AnchorPane AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+                        <Label text="技术支持：小谭"
+                               style="-fx-font-size: 11; -fx-background-color: transparent; -fx-padding: 2 8; -fx-text-fill: #bbb;"/>
+                    </AnchorPane>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </SplitPane>
+</AnchorPane> 
