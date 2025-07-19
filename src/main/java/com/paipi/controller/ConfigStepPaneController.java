@@ -72,7 +72,8 @@ public class ConfigStepPaneController {
     public void initialize() {
         initDefaultSetting();
         // 初始化模式、数据源类型
-        modeComboBox.getItems().addAll("DB_TO_FILE", "DB_TO_DB", "EXECUTE_SQL");
+        modeComboBox.getItems().clear();
+        modeComboBox.getItems().addAll("DB_TO_FILE", "EXECUTE_SQL", "DB_TO_DB");
         sourceTypeComboBox.getItems().addAll("Mysql", "Postgresql", "Hive", "TxtFile", "HBase");
         targetTypeComboBox.getItems().addAll("Mysql", "Postgresql", "Hive", "TxtFile", "HBase");
         modeComboBox.setOnAction(e -> onModeChanged());
@@ -313,27 +314,28 @@ public class ConfigStepPaneController {
             triggerConfigChanged();
         });
         row++;
-        // table
-        grid.add(new Label("表名(table) *"), 0, row);
-        TextField tableField = new TextField((String) paramArr[0].getOrDefault("table", ""));
-        tableField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-        grid.add(tableField, 1, row);
-        tableField.textProperty().addListener((obs, oldV, newV) -> {
-            paramArr[0].put("table", newV);
-            triggerConfigChanged();
-        });
-        row++;
-        // column
-        grid.add(new Label("字段列表(column,逗号分隔) *"), 0, row);
-        TextField colField = new TextField(columnListToString(paramArr[0].get("column")));
-        colField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-        grid.add(colField, 1, row);
-        colField.textProperty().addListener((obs, oldV, newV) -> {
-            List<String> cols = Arrays.asList(newV.split(","));
-            paramArr[0].put("column", cols);
-            triggerConfigChanged();
-        });
-        row++;
+        // table/column 仅非EXECUTE_SQL模式下显示
+        if (!isExecuteSqlMode) {
+            grid.add(new Label("表名(table) *"), 0, row);
+            TextField tableField = new TextField((String) paramArr[0].getOrDefault("table", ""));
+            tableField.setPrefWidth(UNIFIED_FIELD_WIDTH);
+            grid.add(tableField, 1, row);
+            tableField.textProperty().addListener((obs, oldV, newV) -> {
+                paramArr[0].put("table", newV);
+                triggerConfigChanged();
+            });
+            row++;
+            grid.add(new Label("字段列表(column,逗号分隔) *"), 0, row);
+            TextField colField = new TextField(columnListToString(paramArr[0].get("column")));
+            colField.setPrefWidth(UNIFIED_FIELD_WIDTH);
+            grid.add(colField, 1, row);
+            colField.textProperty().addListener((obs, oldV, newV) -> {
+                List<String> cols = Arrays.asList(newV.split(","));
+                paramArr[0].put("column", cols);
+                triggerConfigChanged();
+            });
+            row++;
+        }
         // where
         if (!isWriter && !isExecuteSqlMode) {
             grid.add(new Label("过滤条件(where)"), 0, row);
@@ -531,27 +533,28 @@ public class ConfigStepPaneController {
             triggerConfigChanged();
         });
         row++;
-        // table
-        grid.add(new Label("表名(table) *"), 0, row);
-        TextField tableField = new TextField((String) paramArr[0].getOrDefault("table", ""));
-        tableField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-        grid.add(tableField, 1, row);
-        tableField.textProperty().addListener((obs, oldV, newV) -> {
-            paramArr[0].put("table", newV);
-            triggerConfigChanged();
-        });
-        row++;
-        // column
-        grid.add(new Label("字段列表(column,逗号分隔) *"), 0, row);
-        TextField colField = new TextField(columnListToString(paramArr[0].get("column")));
-        colField.setPrefWidth(UNIFIED_FIELD_WIDTH);
-        grid.add(colField, 1, row);
-        colField.textProperty().addListener((obs, oldV, newV) -> {
-            List<String> cols = Arrays.asList(newV.split(","));
-            paramArr[0].put("column", cols);
-            triggerConfigChanged();
-        });
-        row++;
+        // table/column 仅非EXECUTE_SQL模式下显示
+        if (!isExecuteSqlMode) {
+            grid.add(new Label("表名(table) *"), 0, row);
+            TextField tableField = new TextField((String) paramArr[0].getOrDefault("table", ""));
+            tableField.setPrefWidth(UNIFIED_FIELD_WIDTH);
+            grid.add(tableField, 1, row);
+            tableField.textProperty().addListener((obs, oldV, newV) -> {
+                paramArr[0].put("table", newV);
+                triggerConfigChanged();
+            });
+            row++;
+            grid.add(new Label("字段列表(column,逗号分隔) *"), 0, row);
+            TextField colField = new TextField(columnListToString(paramArr[0].get("column")));
+            colField.setPrefWidth(UNIFIED_FIELD_WIDTH);
+            grid.add(colField, 1, row);
+            colField.textProperty().addListener((obs, oldV, newV) -> {
+                List<String> cols = Arrays.asList(newV.split(","));
+                paramArr[0].put("column", cols);
+                triggerConfigChanged();
+            });
+            row++;
+        }
         // where
         if (!isWriter && !isExecuteSqlMode) {
             grid.add(new Label("过滤条件(where)"), 0, row);
@@ -1232,11 +1235,24 @@ public class ConfigStepPaneController {
                         sourceTypeComboBox.setValue(sourceConfig.getName());
                     }
                 }
-                modeComboBox.setValue("DB_TO_DB");
-                sourceTypeComboBox.setValue(sourceConfig.getName());
-                targetTypeComboBox.setValue(targetConfig.getName());
+                // 根据sqlMode设置模式
+                String sqlModeStr = jobConfig.getSqlMode();
+                String modeVal = null;
+                if ("0".equals(sqlModeStr)) {
+                    modeVal = "DB_TO_FILE";
+                } else if ("1".equals(sqlModeStr)) {
+                    modeVal = "EXECUTE_SQL";
+                } else if ("2".equals(sqlModeStr)) {
+                    modeVal = "DB_TO_DB";
+                }
+                if (modeVal != null) {
+                    modeComboBox.setValue(modeVal);
+                }
+                // 只有DB_TO_DB才设置targetTypeComboBox，否则置空
+                if (!"DB_TO_DB".equals(modeVal)) {
+                    targetTypeComboBox.setValue(null);
+                }
                 refreshParamGrid();
-                // 新增：导入后刷新transformer链和json区
                 refreshTransformerPreview();
                 triggerConfigChanged();
                 showInfo("导入成功");
@@ -1277,8 +1293,9 @@ public class ConfigStepPaneController {
             showInfo("请选择数据源类型");
             return false;
         }
-        // 按类型分支校验
-        if ("Mysql".equals(type) || "Postgresql".equals(type) || "Hive".equals(type)) {
+        boolean isExecuteSqlMode = "EXECUTE_SQL".equals(mode);
+        if (isExecuteSqlMode) {
+            // 只校验连接参数和SQL语句
             if (param.get("connection") instanceof Map) {
                 Map conn = (Map) param.get("connection");
                 if (conn.get("ip") == null || conn.get("ip").toString().trim().isEmpty()) {
@@ -1311,42 +1328,16 @@ public class ConfigStepPaneController {
                 showInfo("数据库连接参数(connection)为必填项");
                 return false;
             }
-            if (param.get("table") == null || param.get("table").toString().trim().isEmpty()) {
-                showInfo("表名(table)为必填项");
+            // SQL语句和SQL文件至少有一个
+            String sql = (String) param.getOrDefault("sql", "");
+            String sqlFile = (String) param.getOrDefault("sqlFile", "");
+            if ((sql == null || sql.trim().isEmpty()) && (sqlFile == null || sqlFile.trim().isEmpty())) {
+                showInfo("SQL语句(sql)或SQL文件(sqlFile)必须至少填写一个");
                 return false;
             }
-            if (param.get("column") == null || !(param.get("column") instanceof List) || ((List<?>) param.get("column")).isEmpty()) {
-                showInfo("字段列表(column)为必填项");
-                return false;
-            }
-        } else if ("TxtFile".equals(type)) {
-            if (param.get("filePath") == null || param.get("filePath").toString().trim().isEmpty()) {
-                showInfo("文件路径(filePath)为必填项");
-                return false;
-            }
-            if (param.get("sep") == null || param.get("sep").toString().trim().isEmpty()) {
-                showInfo("分隔符(sep)为必填项");
-                return false;
-            }
-        } else if ("HBase".equals(type)) {
-            if (param.get("hbaseConfig") == null || param.get("hbaseConfig").toString().trim().isEmpty()) {
-                showInfo("HBase连接配置(hbaseConfig)为必填项");
-                return false;
-            }
-            if (param.get("table") == null || param.get("table").toString().trim().isEmpty()) {
-                showInfo("表名(table)为必填项");
-                return false;
-            }
-            if (param.get("rowkey") == null || param.get("rowkey").toString().trim().isEmpty()) {
-                showInfo("rowkey字段(rowkey)为必填项");
-                return false;
-            }
-            if (param.get("column") == null || !(param.get("column") instanceof List) || ((List<?>) param.get("column")).isEmpty()) {
-                showInfo("字段列表(column)为必填项");
-                return false;
-            }
+            return true;
         }
-        // 其它类型可扩展...
+        // ... existing code ...
         return true;
     }
 
@@ -1382,19 +1373,79 @@ public class ConfigStepPaneController {
     @FXML
     private void onLoadExample() {
         try {
-            String example = "{\n  \"sqlMode\": 0,\n  \"content\": [{\n    \"common\": {\n      \"name\": \"Mysql\",\n      \"parameter\": {\n        \"connection\": {\"ip\": \"127.0.0.1\",\"port\": \"3306\",\"username\": \"root\",\"password\": \"admin\",\"database\": \"demo\"},\n        \"table\": \"user\",\n        \"column\": [\"id\",\"name\"],\n        \"saveUrl\": \"./\",\n        \"fileType\": \"csv\",\n        \"isChunk\": true,\n        \"chunkSize\": 10000,\n        \"sep\": \",\"\n      }\n    }\n  }]\n}";
+            String mode = modeComboBox.getValue();
+            String fileName = null;
+            if ("DB_TO_FILE".equals(mode)) {
+                fileName = "/datasource-config-model-0.json";
+            } else if ("EXECUTE_SQL".equals(mode)) {
+                fileName = "/datasource-config-model-1.json";
+            } else if ("DB_TO_DB".equals(mode)) {
+                fileName = "/datasource-config-model-2.json";
+            }
+            if (fileName == null) {
+                showInfo("未识别的同步模式，无法加载经典配置");
+                return;
+            }
+            java.io.InputStream is = getClass().getResourceAsStream(fileName);
+            if (is == null) {
+                showInfo("未找到经典配置文件: " + fileName);
+                return;
+            }
+            // 兼容低版本JDK没有readAllBytes方法
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                baos.write(buffer, 0, len);
+            }
+            String json = new String(baos.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
             ObjectMapper om = new ObjectMapper();
-            Map map = om.readValue(example, Map.class);
+            Map map = om.readValue(json, Map.class);
             if (map.containsKey("job")) {
                 JobConfig cfg = om.convertValue(map.get("job"), JobConfig.class);
                 this.jobConfig = cfg;
             } else {
-                this.jobConfig = om.readValue(example, JobConfig.class);
+                this.jobConfig = om.readValue(json, JobConfig.class);
+            }
+            // 自动同步UI下拉框和表单数据
+            if (jobConfig.getContent() != null && !jobConfig.getContent().isEmpty()) {
+                JobConfig.ContentConfig content = jobConfig.getContent().get(0);
+                if (content.getReader() != null) {
+                    sourceConfig = content.getReader();
+                    sourceTypeComboBox.setValue(sourceConfig.getName());
+                }
+                if (content.getWriter() != null) {
+                    targetConfig = content.getWriter();
+                    targetTypeComboBox.setValue(targetConfig.getName());
+                }
+                if (content.getCommon() != null) {
+                    sourceConfig = content.getCommon();
+                    sourceTypeComboBox.setValue(sourceConfig.getName());
+                }
+            }
+            // 根据sqlMode设置模式
+            String sqlModeStr = jobConfig.getSqlMode();
+            String modeVal = null;
+            if ("0".equals(sqlModeStr)) {
+                modeVal = "DB_TO_FILE";
+            } else if ("1".equals(sqlModeStr)) {
+                modeVal = "EXECUTE_SQL";
+            } else if ("2".equals(sqlModeStr)) {
+                modeVal = "DB_TO_DB";
+            }
+            if (modeVal != null) {
+                modeComboBox.setValue(modeVal);
+            }
+            // 只有DB_TO_DB才设置targetTypeComboBox，否则置空
+            if (!"DB_TO_DB".equals(modeVal)) {
+                targetTypeComboBox.setValue(null);
             }
             refreshParamGrid();
-            showInfo("已加载典型配置");
+            refreshTransformerPreview();
+            triggerConfigChanged();
+            showInfo("已加载经典配置: " + fileName);
         } catch (Exception e) {
-            showInfo("加载典型配置失败: " + e.getMessage());
+            showInfo("加载经典配置失败: " + e.getMessage());
         }
     }
 

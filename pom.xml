@@ -70,7 +70,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.paipi.DbDesktopApp</mainClass>
+                            <mainClass>com.paipi.EngineDesktopApp</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

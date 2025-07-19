@@ -180,6 +180,16 @@ public class MainWindowController {
         if (runHistoryListView != null) runHistoryListView.setOnMouseClicked(this::onHistoryClick);
         loadJarPath();
         if (jarPathField != null) jarPathField.setText(externalJarPath);
+        // 自动尝试设置JAR路径
+        if (jarPathField != null && (jarPathField.getText() == null || jarPathField.getText().trim().isEmpty())) {
+            try {
+                java.net.URL jarUrl = getClass().getResource("/paipi_db-1.0-SNAPSHOT-jar-with-dependencies.jar");
+                if (jarUrl != null) {
+                    String jarPath = new java.io.File(jarUrl.toURI()).getAbsolutePath();
+                    jarPathField.setText(jarPath);
+                }
+            } catch (Exception ignored) {}
+        }
     }
 
     private void log(String msg) {
@@ -203,10 +213,21 @@ public class MainWindowController {
         }
         JobConfig.ContentConfig content = jobConfig.getContent().get(0);
         DataSourceConfig mainConfig = null;
+        String mode = null;
         if (content.getCommon() != null) {
             mainConfig = content.getCommon();
+            // 通过sqlMode判断模式
+            String sqlModeStr = jobConfig.getSqlMode();
+            if ("0".equals(sqlModeStr)) {
+                mode = "DB_TO_FILE";
+            } else if ("1".equals(sqlModeStr)) {
+                mode = "EXECUTE_SQL";
+            } else if ("2".equals(sqlModeStr)) {
+                mode = "DB_TO_DB";
+            }
         } else if (content.getReader() != null) {
             mainConfig = content.getReader();
+            mode = "DB_TO_DB";
         }
         if (mainConfig == null) {
             logRun("请填写数据源参数");
@@ -221,6 +242,50 @@ public class MainWindowController {
         if (type == null || type.trim().isEmpty()) {
             logRun("请选择数据源类型");
             return false;
+        }
+        boolean isExecuteSqlMode = "EXECUTE_SQL".equals(mode);
+        if (isExecuteSqlMode) {
+            // 只校验连接参数和SQL语句
+            if (param.get("connection") instanceof java.util.Map) {
+                java.util.Map conn = (java.util.Map) param.get("connection");
+                if (conn.get("ip") == null || conn.get("ip").toString().trim().isEmpty()) {
+                    logRun("数据库地址(ip)为必填项");
+                    return false;
+                }
+                if (conn.get("port") == null || conn.get("port").toString().trim().isEmpty()) {
+                    logRun("端口(port)为必填项");
+                    return false;
+                }
+                try {
+                    Integer.parseInt(conn.get("port").toString());
+                } catch (Exception e) {
+                    logRun("端口(port)必须为数字");
+                    return false;
+                }
+                if (conn.get("username") == null || conn.get("username").toString().trim().isEmpty()) {
+                    logRun("用户名(username)为必填项");
+                    return false;
+                }
+                if (conn.get("password") == null || conn.get("password").toString().trim().isEmpty()) {
+                    logRun("密码(password)为必填项");
+                    return false;
+                }
+                if (conn.get("database") == null || conn.get("database").toString().trim().isEmpty()) {
+                    logRun("数据库名(database)为必填项");
+                    return false;
+                }
+            } else {
+                logRun("数据库连接参数(connection)为必填项");
+                return false;
+            }
+            // SQL语句和SQL文件至少有一个
+            String sql = (String) param.getOrDefault("sql", "");
+            String sqlFile = (String) param.getOrDefault("sqlFile", "");
+            if ((sql == null || sql.trim().isEmpty()) && (sqlFile == null || sqlFile.trim().isEmpty())) {
+                logRun("SQL语句(sql)或SQL文件(sqlFile)必须至少填写一个");
+                return false;
+            }
+            return true;
         }
         // 按类型分支校验
         if ("Mysql".equals(type) || "Postgresql".equals(type) || "Hive".equals(type)) {
