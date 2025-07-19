@@ -1,4 +1,4 @@
-package com.paipi;
+package com.paipi.tool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paipi.config.DataSourceConfig;

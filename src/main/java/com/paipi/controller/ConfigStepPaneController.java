@@ -1,4 +1,4 @@
-package com.paipi;
+package com.paipi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.TransformerChainDialogController" spacing="16"
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.controller.TransformerChainDialogController" spacing="16"
       style="-fx-padding: 28; -fx-background-radius: 14; -fx-background-color: #fff;">
     <Label text="Transformer链编辑" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-padding: 0 0 12 0;"/>
     <TableView fx:id="transformerTable" prefHeight="220"

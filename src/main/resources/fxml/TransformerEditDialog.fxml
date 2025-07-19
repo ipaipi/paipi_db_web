@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.TransformerEditDialogController" spacing="12"
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.controller.TransformerEditDialogController" spacing="12"
       style="-fx-padding: 20;">
     <Label text="编辑Transformer参数" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
     <HBox spacing="8">

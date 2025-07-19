@@ -1,4 +1,4 @@
-package com.paipi;
+package com.paipi.controller;
 
 import com.paipi.config.JobConfig;
 import com.paipi.config.TransformerConfig;

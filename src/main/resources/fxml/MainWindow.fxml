@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.MainWindowController"
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.paipi.controller.MainWindowController"
             style="-fx-background-color: #f7f8fa;" prefWidth="1200" prefHeight="800">
     <SplitPane orientation="HORIZONTAL" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
                AnchorPane.bottomAnchor="0" dividerPositions="0.32,0.68">
