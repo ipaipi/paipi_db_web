@@ -54,7 +54,24 @@ public class MainWindowController {
         }
         if (!validateAllParams()) return;
         if (jarPathField != null) externalJarPath = jarPathField.getText();
-        if (externalJarPath == null || externalJarPath.trim().isEmpty() || !new File(externalJarPath).exists()) {
+        boolean jarExists = false;
+        if (externalJarPath != null && !externalJarPath.trim().isEmpty()) {
+            File f = new File(externalJarPath);
+            if (f.exists() && f.isFile()) {
+                jarExists = true;
+            } else {
+                // 尝试用classpath方式判断
+                try {
+                    java.net.URL jarUrl = getClass().getResource("/paipi_db-1.0-SNAPSHOT-jar-with-dependencies.jar");
+                    if (jarUrl != null) {
+                        jarExists = true;
+                        externalJarPath = new java.io.File(jarUrl.toURI()).getAbsolutePath();
+                        jarPathField.setText(externalJarPath);
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+        if (!jarExists) {
             logRun("JAR路径无效，请先选择正确的JAR文件");
             return;
         }
