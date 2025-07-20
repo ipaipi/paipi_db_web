@@ -188,7 +188,8 @@ public class MainWindowController {
                     String jarPath = new java.io.File(jarUrl.toURI()).getAbsolutePath();
                     jarPathField.setText(jarPath);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
     }
 
